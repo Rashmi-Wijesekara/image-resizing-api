@@ -26,7 +26,7 @@ namespace ImageResizingAPI.Controllers
             byte[] imageArray = System.IO.File.ReadAllBytes(@resizedImagePath);
             string base64ImageRepresentation = Convert.ToBase64String(imageArray);
 
-            return base64ImageRepresentation;
+            return "data:image/jpg;base64," + base64ImageRepresentation;
         }
     }
 }

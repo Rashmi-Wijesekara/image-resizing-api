@@ -13,13 +13,13 @@ namespace ImageResizingAPI.Controllers
         {
             string resizedImagePath = "C:/Users/Dell/Desktop/resized/" + width + "x" + height + ".jpg";
 
-            byte[] resizedImageArray = this.getResizedImage("C:/Users/Dell/Desktop/certificate.jpg", width, height);
+            byte[] resizedImageArray = this.getResizedImage("C:/Users/Dell/Desktop/certificate.jpg", resizedImagePath, width, height);
             string base64ImageRepresentation = Convert.ToBase64String(resizedImageArray);
 
-            return base64ImageRepresentation;
+            return "data:image/jpg;base64," + base64ImageRepresentation;
         }
 
-        private byte[] getResizedImage(String path, int width, int height)
+        private byte[] getResizedImage(String path, String resizedImagePath, int width, int height)
         {
             Bitmap imgIn = new Bitmap(path);
             double y = imgIn.Height;
@@ -37,8 +37,6 @@ namespace ImageResizingAPI.Controllers
             System.IO.MemoryStream outStream = new System.IO.MemoryStream();
             Bitmap imgOut = new Bitmap((int)(x * factor), (int)(y * factor));
 
-            //Bitmap imgOut = new Bitmap((int)(x), (int)(y));
-
             // Set DPI of image (xDpi, yDpi)
             imgOut.SetResolution(72, 72);
 
@@ -47,10 +45,11 @@ namespace ImageResizingAPI.Controllers
             g.DrawImage(imgIn, new Rectangle(0, 0, (int)(factor * x), (int)(factor * y)),
               new Rectangle(0, 0, (int)x, (int)y), GraphicsUnit.Pixel);
 
-            //g.DrawImage(imgIn, new Rectangle(0, 0, (int)(x), (int)(y)),
-            //  new Rectangle(0, 0, (int)x, (int)y), GraphicsUnit.Pixel);
-
             imgOut.Save(outStream, getImageFormat(path));
+
+            // save image in folder
+            imgOut.Save(resizedImagePath);
+
             return outStream.ToArray();
         }
 
